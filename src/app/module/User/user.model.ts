@@ -14,7 +14,6 @@ const userSchema = new Schema<TUser>(
       type: String,
       required: true,
       unique: true,
-      
     },
     name: {
       type: String,
@@ -36,7 +35,7 @@ const userSchema = new Schema<TUser>(
   },
   {
     timestamps: true,
-  }
+  },
 );
 
 export const User = model<TUser>("User", userSchema);

@@ -10,5 +10,5 @@ const CreateUserValidationSchema = z.object({
 });
 
 export const UserValidation = {
-  CreateUserValidationSchema
+  CreateUserValidationSchema,
 };
