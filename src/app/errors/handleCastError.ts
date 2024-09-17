@@ -1,9 +1,7 @@
-import mongoose from 'mongoose';
-import { TErrorSources, TGenericErrorResponse } from '../interface/error';
+import mongoose from "mongoose";
+import { TErrorSources, TGenericErrorResponse } from "../interface/error";
 
- 
-
-// Todo without further modification you can use the code. If you want to customize the error message then you can do so. 
+// Todo without further modification you can use the code. If you want to customize the error message then you can do so.
 
 const handleCastError = (
   err: mongoose.Error.CastError,
@@ -19,7 +17,7 @@ const handleCastError = (
 
   return {
     statusCode,
-    message: 'Invalid ID',
+    message: "Invalid ID",
     errorSources,
   };
 };

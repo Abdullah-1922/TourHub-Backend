@@ -11,7 +11,7 @@ router.post(
   "/create-user",
 
   validateRequest(UserValidation.CreateUserValidationSchema),
-  UserControllers.createUser
+  UserControllers.createUser,
 );
 
 export const UserRoutes = router;
