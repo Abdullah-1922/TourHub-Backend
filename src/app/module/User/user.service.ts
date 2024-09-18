@@ -4,6 +4,7 @@ import { TUser } from "./user.interface";
 import { User } from "./user.model";
 
 const createUser = async (userPayload: TUser) => {
+  console.log(userPayload);
   const result = await User.create(userPayload);
   return result;
 };
