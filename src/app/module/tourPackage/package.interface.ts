@@ -5,10 +5,9 @@ export interface TFeature {
   exclude: string[];
 }
 
-
 export interface TPackage {
   user: Types.ObjectId;
-  name:string;
+  name: string;
   startDate: Date;
   endDate: Date;
   price: number;
@@ -20,5 +19,6 @@ export interface TPackage {
   category: string[];
   country: string;
   location: string;
+  comments: string[];
   isDeleted: boolean;
 }

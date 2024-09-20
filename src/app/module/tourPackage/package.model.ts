@@ -26,6 +26,7 @@ const PackageSchema: Schema = new Schema<TPackage>(
     ],
     country: { type: String, required: true },
     location: { type: String, required: true },
+    comments: [{ type: Schema.Types.ObjectId, ref: "Comment" }],
     isDeleted: { type: Boolean, default: false },
   },
   { timestamps: true }
