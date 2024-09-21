@@ -1,6 +1,7 @@
 import { PackageRoutes } from "./../module/tourPackage/package.route";
 import { Router } from "express";
 import { UserRoutes } from "../module/User/user.route";
+import { CommentRoutes } from "../module/comment/comment.route";
 
 const router = Router();
 
@@ -12,6 +13,10 @@ const moduleRoutes = [
   {
     path: "/package",
     route: PackageRoutes,
+  },
+  {
+    path: "/comment",
+    route: CommentRoutes,
   },
 ];
 

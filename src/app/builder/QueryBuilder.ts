@@ -1,5 +1,5 @@
 /* eslint-disable prefer-const */
-import { FilterQuery, Query } from 'mongoose';
+import { FilterQuery, Query } from "mongoose";
 
 export class QueryBuilder<T> {
   public query: Record<string, unknown>; //payload
@@ -10,18 +10,18 @@ export class QueryBuilder<T> {
     this.modelQuery = modelQuery;
   }
   search(searchableFields: string[]) {
-    let searchTerm = '';
+    let searchTerm = "";
 
     if (this.query?.searchTerm) {
       searchTerm = this.query.searchTerm as string;
     }
- 
+
     this.modelQuery = this.modelQuery.find({
       $or: searchableFields.map(
         (field) =>
           ({
-            [field]: new RegExp(searchTerm, 'i'),
-          } as FilterQuery<T>)
+            [field]: new RegExp(searchTerm, "i"),
+          }) as FilterQuery<T>
       ),
     });
     return this;
@@ -41,20 +41,21 @@ export class QueryBuilder<T> {
     return this;
   }
   sort() {
-    let sortBy = '-createdAt';
+    let sortBy = "-createdAt";
 
     if (this.query?.sortBy) {
       sortBy = this.query.sortBy as string;
     }
 
     this.modelQuery = this.modelQuery.sort(sortBy);
+
     return this;
   }
   fields() {
-    let fields = '';
+    let fields = "";
 
     if (this.query?.fields) {
-      fields = (this.query?.fields as string).split(',').join(' ');
+      fields = (this.query?.fields as string).split(",").join(" ");
     }
 
     this.modelQuery = this.modelQuery.select(fields);
@@ -62,9 +63,24 @@ export class QueryBuilder<T> {
   }
   filter() {
     const queryObj = { ...this.query };
-    const excludeFields = ['searchTerm', 'page', 'limit', 'sortBy', 'fields'];
+    const excludeFields = ["searchTerm", "page", "limit", "sortBy", "fields"];
 
     excludeFields.forEach((e) => delete queryObj[e]);
+
+    if (queryObj.startDate && queryObj.endDate) {
+      queryObj.startDate = { $gte: new Date(queryObj.startDate as string) };
+      queryObj.endDate = { $lte: new Date(queryObj.endDate as string) };
+
+      // console.log(queryObj['startDate']);
+      // console.log(queryObj.endDate);
+    }
+
+    Object.keys(queryObj).forEach((key) => {
+      if (typeof queryObj[key] === "string") {
+        // console.log(queryObj[key]);
+        queryObj[key] = { $regex: queryObj[key], $options: "i" };
+      }
+    });
 
     this.modelQuery = this.modelQuery.find(queryObj as FilterQuery<T>);
 
