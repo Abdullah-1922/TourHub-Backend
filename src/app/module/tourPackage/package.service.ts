@@ -6,6 +6,6 @@ const createPackage = async (payload: Partial<TPackage>) => {
   return res;
 };
 
-export const PackageServices = {
+export const NewsServices = {
   createPackage,
 };
