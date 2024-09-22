@@ -1,4 +1,3 @@
-// Todo without further modification you can use the code
 
 class AppError extends Error {
   public statusCode: number;

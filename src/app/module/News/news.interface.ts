@@ -6,5 +6,5 @@ export interface TNews{
   newsCategory: string;
   title: string;
   description: string;
-  images: string[];
+  images: string;
 }
