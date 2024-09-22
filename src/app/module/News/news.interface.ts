@@ -3,9 +3,8 @@ import { Types } from "mongoose";
 
 export interface TNews{
   user: Types.ObjectId;
-  newsCategory: string[];
+  newsCategory: string;
   title: string;
   description: string;
-  createdAt: Date;
-  updatedAt: Date;
+  images: string[];
 }

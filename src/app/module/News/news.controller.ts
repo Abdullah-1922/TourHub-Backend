@@ -14,6 +14,17 @@ const createNews = catchAsync(
         });
     }
 )
+
+const getAllNews = catchAsync(async (req, res) => {
+    const result = await NewsServices.getAllNews(req?.query);
+    sendResponse(res, {
+      statusCode: httpStatus.OK,
+      success: true,
+      message: "News retrieved successfully",
+      data: result,
+    });
+  });
 export const NewsControllers = {
-   createNews
+   createNews,
+   getAllNews
 };
