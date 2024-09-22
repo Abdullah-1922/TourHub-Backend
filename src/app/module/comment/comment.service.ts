@@ -86,9 +86,8 @@ const createComment = async (payload: Partial<TComment>) => {
       }
     }
 
-await session.commitTransaction()
-session.endSession()
-
+    await session.commitTransaction();
+    session.endSession();
 
     return newComment;
   } catch (error) {
@@ -100,6 +99,11 @@ session.endSession()
     );
   }
 };
+
+
+
+
+
 
 export const CommentServices = {
   createComment,
