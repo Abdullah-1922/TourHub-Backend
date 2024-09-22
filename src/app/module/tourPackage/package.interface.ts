@@ -20,5 +20,6 @@ export interface TPackage {
   country: string;
   location: string;
   comments: string[];
+  averageRating:number
   isDeleted: boolean;
 }
