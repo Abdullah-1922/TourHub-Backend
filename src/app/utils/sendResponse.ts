@@ -1,6 +1,6 @@
 import { Response } from "express";
 
-9
+9;
 
 type TMeta = {
   limit: number;
