@@ -3,7 +3,7 @@ import { TNews } from "./news.interface";
 
 const NewsSchema: Schema = new Schema<TNews>(
   {
-    user: { type: Schema.Types.ObjectId, ref: "user", required: true },
+    user: { type: Schema.Types.ObjectId, ref: "User", required: true },
     newsCategory: { type: String, required: true },
     title: { type: String, required: true },
     description: { type: String, required: true },
