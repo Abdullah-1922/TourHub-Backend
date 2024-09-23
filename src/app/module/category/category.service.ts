@@ -16,7 +16,7 @@ const deleteCategory = async (categoryId: string) => {
   // Remove the category from the Package collection's category array
   await Package.updateMany(
     { category: categoryId },
-    { $pull: { category: categoryId } }
+    { $pull: { category: categoryId } },
   );
 
   //  delete the category itself
@@ -35,7 +35,7 @@ const getSingleCategory = async (categoryId: string) => {
 };
 const updateCategory = async (
   categoryId: string,
-  payload: Partial<TCategory>
+  payload: Partial<TCategory>,
 ) => {
   const category = await Category.findById(categoryId);
   if (!category) {

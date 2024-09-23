@@ -21,7 +21,7 @@ export class QueryBuilder<T> {
         (field) =>
           ({
             [field]: new RegExp(searchTerm, "i"),
-          }) as FilterQuery<T>
+          }) as FilterQuery<T>,
       ),
     });
     return this;
@@ -40,8 +40,12 @@ export class QueryBuilder<T> {
 
     return this;
   }
-  sort() {
+  sort(section: string = "null") {
     let sortBy = "-createdAt";
+
+    if (section === "commentSection") {
+      sortBy = "-averageRating";
+    }
 
     if (this.query?.sortBy) {
       sortBy = this.query.sortBy as string;
@@ -70,14 +74,10 @@ export class QueryBuilder<T> {
     if (queryObj.startDate && queryObj.endDate) {
       queryObj.startDate = { $gte: new Date(queryObj.startDate as string) };
       queryObj.endDate = { $lte: new Date(queryObj.endDate as string) };
-
-      // console.log(queryObj['startDate']);
-      // console.log(queryObj.endDate);
     }
 
     Object.keys(queryObj).forEach((key) => {
       if (typeof queryObj[key] === "string") {
-        // console.log(queryObj[key]);
         queryObj[key] = { $regex: queryObj[key], $options: "i" };
       }
     });

@@ -4,7 +4,8 @@ import { Package } from "../tourPackage/package.model";
 import { TComment } from "./comment.interface";
 import { Comment } from "./comment.model";
 import { User } from "../User/user.model";
-import mongoose, { ObjectId } from "mongoose";
+import mongoose from "mongoose";
+import { QueryBuilder } from "../../builder/QueryBuilder";
 
 const createComment = async (payload: Partial<TComment>) => {
   const {
@@ -16,8 +17,6 @@ const createComment = async (payload: Partial<TComment>) => {
     priceRating = 0,
     tourOperatorRating = 0,
     amenitiesRating = 0,
-    image,
-    comment,
   } = payload;
 
   const packageData = await Package.findById(tourPackageId);
@@ -39,7 +38,7 @@ const createComment = async (payload: Partial<TComment>) => {
         tourOperatorRating +
         amenitiesRating) /
       6
-    ).toFixed(1)
+    ).toFixed(1),
   );
 
   payload.averageRating = averageRating;
@@ -49,13 +48,13 @@ const createComment = async (payload: Partial<TComment>) => {
   try {
     const [newComment] = await Comment.create(
       [{ ...payload, averageRating: payload.averageRating }],
-      { session }
+      { session },
     );
 
     const addCommentToPackage = await Package.findByIdAndUpdate(
       tourPackageId,
       { $push: { comments: newComment._id } },
-      { new: true, session }
+      { new: true, session },
     );
 
     if (addCommentToPackage) {
@@ -65,15 +64,15 @@ const createComment = async (payload: Partial<TComment>) => {
         await Package.findByIdAndUpdate(
           tourPackageId,
           { averageRating: 0 },
-          { session }
+          { session },
         );
       } else {
         const totalAverageRating = comments.reduce(
           (acc, comment) => acc + comment.averageRating,
-          0
+          0,
         );
         const newAverageRating = (totalAverageRating / comments.length).toFixed(
-          1
+          1,
         );
 
         await Package.findByIdAndUpdate(
@@ -81,7 +80,7 @@ const createComment = async (payload: Partial<TComment>) => {
           {
             averageRating: newAverageRating,
           },
-          { session }
+          { session },
         );
       }
     }
@@ -90,21 +89,41 @@ const createComment = async (payload: Partial<TComment>) => {
     session.endSession();
 
     return newComment;
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
   } catch (error) {
     await session.abortTransaction();
     session.endSession();
     throw new AppError(
       httpStatus.INTERNAL_SERVER_ERROR,
-      "Failed to create comment"
+      "Failed to create comment",
     );
   }
 };
 
+const getCommentForPackage = async (
+  packageId: string,
+  query: Record<string, unknown>,
+) => {
+  const tourPackage = await Package.findById(packageId);
 
+  if (!tourPackage) {
+    throw new AppError(404, "Invalid package Id");
+  }
 
-
-
+  const packageComment = new QueryBuilder(
+    Comment.find({ tourPackageId: packageId }),
+    query,
+  )
+    .search(["comment"])
+    .filter()
+    .sort("commentSection")
+    .paginate()
+    .fields();
+  const result = await packageComment.modelQuery;
+  return result;
+};
 
 export const CommentServices = {
   createComment,
+  getCommentForPackage,
 };

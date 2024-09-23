@@ -14,14 +14,14 @@ const CreatePackageValidationSchema = z.object({
     description: z.string({ required_error: "Description is required" }),
     cardImage: z.string({ required_error: "Card Image is required" }),
     bannerImage: z.array(
-      z.string({ required_error: "Banner Image is required" })
+      z.string({ required_error: "Banner Image is required" }),
     ),
     features: z.object({
       include: z.array(z.string({ required_error: "Include is required" })),
       exclude: z.array(z.string({ required_error: "Exclude is required" })),
     }),
     category: z.array(
-      z.string({ required_error: "Category is required" }).min(1)
+      z.string({ required_error: "Category is required" }).min(1),
     ),
     country: z.string({ required_error: "Country is required" }),
     location: z.string({ required_error: "Location is required" }),
