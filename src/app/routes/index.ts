@@ -24,6 +24,10 @@ const moduleRoutes = [
     path: "/category",
     route: CategoryRoutes,
   },
+  {
+    path: "/comment",
+    route: CommentRoutes,
+  }
 ];
 
 moduleRoutes.forEach((route) => router.use(route.path, route.route));
