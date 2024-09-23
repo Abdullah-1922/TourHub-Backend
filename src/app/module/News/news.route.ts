@@ -14,5 +14,6 @@ const router = Router()
 
 router.post("/create-news",NewsControllers.createNews)
 router.get("/find-all-news", NewsControllers.getAllNews);
+router.delete('/:newsId', NewsControllers.deleteNewsWithId);
 
 export const NewsRouter = router
