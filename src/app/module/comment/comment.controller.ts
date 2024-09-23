@@ -12,7 +12,22 @@ const createComment = catchAsync(async (req, res) => {
     data: result,
   });
 });
+const getCommentForPackage = catchAsync(async (req, res) => {
+  console.log(req.params.id, req.query);
+  const result = await CommentServices.getCommentForPackage(
+    req.params.id,
+    req.query,
+  );
+
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: "Comment retrieved successfully",
+    data: result,
+  });
+});
 
 export const CommentControllers = {
   createComment,
+  getCommentForPackage,
 };

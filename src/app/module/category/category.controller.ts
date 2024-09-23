@@ -34,12 +34,7 @@ const getSingleCategory = catchAsync(async (req, res) => {
   });
 });
 const updateCategory = catchAsync(async (req, res) => {
-
-
-
-    
   const result = await CategoryServices.updateCategory(req.params.id, req.body);
-
 
   sendResponse(res, {
     success: true,
@@ -64,5 +59,5 @@ export const CategoryControllers = {
   getAllCategory,
   getSingleCategory,
   updateCategory,
-  deleteCategory
+  deleteCategory,
 };

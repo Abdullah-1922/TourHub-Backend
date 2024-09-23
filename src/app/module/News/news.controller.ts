@@ -3,21 +3,19 @@ import catchAsync from "../../utils/catchAsync";
 import { NewsServices } from "./news.service";
 import sendResponse from "../../utils/sendResponse";
 
-const createNews = catchAsync(
-  async (req, res) => {
-    const result = await NewsServices.createNews(req.body);
-    sendResponse(res, {
-      statusCode: httpStatus.OK,
-      success: true,
-      message: "News is created successfully",
-      data: result,
-    });
-  }
-)
+const createNews = catchAsync(async (req, res) => {
+  const result = await NewsServices.createNews(req.body);
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: "News is created successfully",
+    data: result,
+  });
+});
 
-// get all news 
+// get all news
 const getAllNews = catchAsync(async (req, res) => {
-  const result = await NewsServices.getAllNews();
+  const result = await NewsServices.getAllNews(req.query);
   sendResponse(res, {
     statusCode: httpStatus.OK,
     success: true,
@@ -27,13 +25,31 @@ const getAllNews = catchAsync(async (req, res) => {
 });
 
 // delete news using id.......
-const deleteNewsWithId = catchAsync(async (req, res, next) => {
+const deleteNewsWithId = catchAsync(async (req, res) => {
   const newsId = req.params.newsId;
 
   const result = await NewsServices.deleteSingleNews(newsId);
   res.status(200).json({
     success: true,
-    message: 'news data deleted successfully!',
+    message: "news data deleted successfully!",
+    data: result,
+  });
+});
+const getSingleNews = catchAsync(async (req, res) => {
+  const newsId = req.params.newsId;
+  const result = await NewsServices.getSingleNews(newsId);
+  res.status(200).json({
+    success: true,
+    message: "news retrieved successfully!",
+    data: result,
+  });
+});
+const updateNews = catchAsync(async (req, res) => {
+  const newsId = req.params.newsId;
+  const result = await NewsServices.updateNews(newsId, req.body);
+  res.status(200).json({
+    success: true,
+    message: "news updated successfully !",
     data: result,
   });
 });
@@ -41,5 +57,7 @@ const deleteNewsWithId = catchAsync(async (req, res, next) => {
 export const NewsControllers = {
   createNews,
   getAllNews,
-  deleteNewsWithId
+  deleteNewsWithId,
+  getSingleNews,
+  updateNews,
 };

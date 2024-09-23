@@ -6,7 +6,7 @@ const FeatureSchema = new Schema<TFeature>(
     include: { type: [String], required: true },
     exclude: { type: [String], required: true },
   },
-  { _id: false, versionKey: false }
+  { _id: false, versionKey: false },
 );
 
 const PackageSchema: Schema = new Schema<TPackage>(
@@ -27,10 +27,10 @@ const PackageSchema: Schema = new Schema<TPackage>(
     country: { type: String, required: true },
     location: { type: String, required: true },
     comments: [{ type: Schema.Types.ObjectId, ref: "Comment" }],
-    averageRating:{type:Number,default:0},
+    averageRating: { type: Number, default: 0 },
     isDeleted: { type: Boolean, default: false },
   },
-  { timestamps: true }
+  { timestamps: true },
 );
 
 export const Package = model<TPackage>("Package", PackageSchema);

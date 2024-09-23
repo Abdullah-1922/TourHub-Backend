@@ -1,6 +1,5 @@
-export interface TCategory{
-    name:string;
-    image:string;
-    categoryDescription:string;
-    
+export interface TCategory {
+  name: string;
+  image: string;
+  categoryDescription: string;
 }

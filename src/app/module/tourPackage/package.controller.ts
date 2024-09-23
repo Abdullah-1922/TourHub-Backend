@@ -21,7 +21,38 @@ const getAllPackage = catchAsync(async (req, res) => {
     data: result,
   });
 });
+const getSinglePackage = catchAsync(async (req, res) => {
+  const result = await PackageServices.getSinglePackage(req.params.id);
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: "Package retrieved successfully",
+    data: result,
+  });
+});
+const deletePackage = catchAsync(async (req, res) => {
+  const result = await PackageServices.deletePackage(req.params.id);
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: "Package deleted successfully",
+    data: result,
+  });
+});
+const updatePackage = catchAsync(async (req, res) => {
+  const result = await PackageServices.updatePackage(req.params.id, req.body);
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: "Package updated successfully",
+    data: result,
+  });
+});
+
 export const PackageControllers = {
   createPackage,
-  getAllPackage
+  getAllPackage,
+  getSinglePackage,
+  deletePackage,
+  updatePackage,
 };
