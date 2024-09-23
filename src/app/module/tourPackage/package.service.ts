@@ -9,6 +9,10 @@ const createPackage = async (payload: Partial<TPackage>) => {
   return res;
 };
 const getAllPackage = async (query: Record<string, unknown>) => {
+  if (query?.category) {
+    query.category = (query.category as string).split(",");
+  }
+
   const tourPackage = new QueryBuilder(
     Package.find({ isDeleted: false }),
     query,

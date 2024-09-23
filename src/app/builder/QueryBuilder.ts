@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable prefer-const */
 import { FilterQuery, Query } from "mongoose";
 
@@ -67,13 +68,59 @@ export class QueryBuilder<T> {
   }
   filter() {
     const queryObj = { ...this.query };
-    const excludeFields = ["searchTerm", "page", "limit", "sortBy", "fields"];
+    const excludeFields = [
+      "searchTerm",
+      "page",
+      "limit",
+      "sortBy",
+      "fields",
+      "min",
+      "max",
+      "category",
+      "starRating",
+    ];
 
     excludeFields.forEach((e) => delete queryObj[e]);
 
     if (queryObj.startDate && queryObj.endDate) {
       queryObj.startDate = { $gte: new Date(queryObj.startDate as string) };
       queryObj.endDate = { $lte: new Date(queryObj.endDate as string) };
+    }
+
+    if (this.query.starRating) {
+      const starRatings = (this.query.starRating as string)
+        .split(",")
+        .map(Number);
+      const ratingConditions = starRatings.map((rating) => ({
+        averageRating: { $gte: rating, $lt: rating + 1 },
+      }));
+
+      this.modelQuery = this.modelQuery.find({
+        ...queryObj,
+        $and: [
+          { averageRating: { $ne: 0 } },
+          { averageRating: { $ne: null } },
+          { $or: ratingConditions },
+        ],
+      } as FilterQuery<T>);
+    } else {
+      this.modelQuery = this.modelQuery.find(queryObj as FilterQuery<T>);
+    }
+
+    if (this.query.max || this.query.min) {
+      queryObj.price = {};
+
+      if (this.query.max) {
+        (queryObj.price as any).$lte = Number(this.query.max);
+      }
+
+      if (this.query.min) {
+        (queryObj.price as any).$gte = Number(this.query.min);
+      }
+    }
+
+    if (this.query.category) {
+      queryObj.category = { $in: this.query.category as string[] };
     }
 
     Object.keys(queryObj).forEach((key) => {

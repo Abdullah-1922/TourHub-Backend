@@ -19,7 +19,7 @@ const getAllUser = async (query: Record<string, unknown>) => {
   return result;
 };
 const getSingleUser = async (id: string) => {
-  const result = await User.findById(id);
+  const result = await User.find({ clerkId: id });
 
   return result;
 };
