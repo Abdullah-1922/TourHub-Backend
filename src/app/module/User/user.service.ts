@@ -1,9 +1,23 @@
+import { clerkClient } from "@clerk/clerk-sdk-node";
 import { QueryBuilder } from "../../builder/QueryBuilder";
 import { TUser } from "./user.interface";
 import { User } from "./user.model";
 
 const createUser = async (userPayload: TUser) => {
   const result = await User.create(userPayload);
+
+  if (userPayload.clerkId) {
+ 
+    await clerkClient.users.updateUserMetadata(
+      userPayload.clerkId,
+      {
+        publicMetadata: {
+          role: "user",
+        },
+      }
+    );
+
+  }
   return result;
 };
 const getAllUser = async (query: Record<string, unknown>) => {

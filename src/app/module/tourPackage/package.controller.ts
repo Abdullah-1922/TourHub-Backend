@@ -13,12 +13,13 @@ const createPackage = catchAsync(async (req, res) => {
   });
 });
 const getAllPackage = catchAsync(async (req, res) => {
-  const result = await PackageServices.getAllPackage(req?.query);
+  const {meta,result} = await PackageServices.getAllPackage(req?.query);
   sendResponse(res, {
     statusCode: httpStatus.OK,
     success: true,
     message: "Package retrieved successfully",
     data: result,
+    meta:meta
   });
 });
 const getSinglePackage = catchAsync(async (req, res) => {

@@ -22,13 +22,13 @@ export class QueryBuilder<T> {
         (field) =>
           ({
             [field]: new RegExp(searchTerm, "i"),
-          }) as FilterQuery<T>,
+          }) as FilterQuery<T>
       ),
     });
     return this;
   }
   paginate() {
-    let limit: number = Number(this.query?.limit || 10);
+    let limit: number = Number(this.query?.limit || 9999);
 
     let skip: number = 0;
 
@@ -78,6 +78,8 @@ export class QueryBuilder<T> {
       "max",
       "category",
       "starRating",
+      "startDate",
+      "endDate",
     ];
 
     excludeFields.forEach((e) => delete queryObj[e]);
@@ -132,5 +134,20 @@ export class QueryBuilder<T> {
     this.modelQuery = this.modelQuery.find(queryObj as FilterQuery<T>);
 
     return this;
+  }
+
+  async countTotal() {
+    const totalQueries = this.modelQuery.getFilter();
+    const total = await this.modelQuery.model.countDocuments(totalQueries);
+    const page = Number(this?.query?.page) || 0;
+    const limit = Number(this?.query?.limit) || 9999;
+    const totalPage = Math.ceil(total / limit);
+
+    return {
+      page,
+      limit,
+      total,
+      totalPage,
+    };
   }
 }
