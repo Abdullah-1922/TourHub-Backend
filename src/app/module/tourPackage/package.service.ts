@@ -9,17 +9,22 @@ const createPackage = async (payload: Partial<TPackage>) => {
   return res;
 };
 const getAllPackage = async (query: Record<string, unknown>) => {
-  const tourPackage = new QueryBuilder(
+  if (query?.category) {
+    query.category = (query.category as string).split(",");
+  }
+
+  const tourPackageQuery = new QueryBuilder(
     Package.find({ isDeleted: false }),
     query,
   )
-    .search(["country", "location"])
+    .search(["country","location"])
     .filter()
     .sort()
     .paginate()
     .fields();
-  const result = await tourPackage.modelQuery;
-  return result;
+  const result = await tourPackageQuery.modelQuery;
+  const meta=await  tourPackageQuery.countTotal()
+  return {result,meta};
 };
 const getSinglePackage = async (id: string) => {
   const result = await Package.findById(id);

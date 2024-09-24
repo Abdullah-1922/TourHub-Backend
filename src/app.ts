@@ -5,6 +5,9 @@ import router from "./app/routes";
 import notFound from "./app/middlewares/notFound";
 import globalErrorHandler from "./app/middlewares/globalErrorhandler";
 import rateLimit from "express-rate-limit";
+import { ClerkExpressWithAuth } from "@clerk/clerk-sdk-node";
+
+
 const app: Application = express();
 
 const limiter = rateLimit({
@@ -24,7 +27,17 @@ const limiter = rateLimit({
 app.use(express.json());
 app.use(cookieParser());
 app.use("/api/v1", limiter);
-app.use(cors({ origin: ["http://localhost:5173"], credentials: true }));
+// app.use(cors({ origin: ["http://localhost:5173"], credentials: true }));
+app.use(
+  cors({
+    origin: (origin, callback) => {
+      callback(null, origin || "*");
+    },
+    credentials: true,
+  })
+);
+console.log(process.env.CLERK_SECRET_KEY);
+app.use(ClerkExpressWithAuth());
 
 app.use("/api/v1", router);
 
