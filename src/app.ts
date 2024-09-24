@@ -36,7 +36,7 @@ app.use(
     credentials: true,
   })
 );
-console.log(process.env.CLERK_SECRET_KEY);
+
 app.use(ClerkExpressWithAuth());
 
 app.use("/api/v1", router);

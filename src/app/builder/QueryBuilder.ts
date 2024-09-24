@@ -78,15 +78,29 @@ export class QueryBuilder<T> {
       "max",
       "category",
       "starRating",
-      "startDate",
-      "endDate",
+  
     ];
 
     excludeFields.forEach((e) => delete queryObj[e]);
 
     if (queryObj.startDate && queryObj.endDate) {
-      queryObj.startDate = { $gte: new Date(queryObj.startDate as string) };
-      queryObj.endDate = { $lte: new Date(queryObj.endDate as string) };
+      console.log('Valid date range found.');
+    
+      // Create a range query for a single field (startDate)
+      queryObj.startDate = {
+        $gte: queryObj.startDate as string,
+        $lte: queryObj.endDate as string
+      };
+    
+      // Since we combined the two into startDate, remove the separate endDate condition
+      delete queryObj.endDate;
+    
+   
+    
+    } else {
+      // If either startDate or endDate is missing, remove both
+      delete queryObj.startDate;
+      delete queryObj.endDate;
     }
 
     if (this.query.starRating) {

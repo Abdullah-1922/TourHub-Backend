@@ -8,8 +8,8 @@ export interface TFeature {
 export interface TPackage {
   user: Types.ObjectId;
   name: string;
-  startDate: Date;
-  endDate: Date;
+  startDate: string;
+  endDate: string;
   price: number;
   totalPeople: string;
   description: string;

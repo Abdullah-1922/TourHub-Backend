@@ -12,9 +12,9 @@ const FeatureSchema = new Schema<TFeature>(
 const PackageSchema: Schema = new Schema<TPackage>(
   {
     user: { type: Schema.Types.ObjectId, ref: "user", required: true },
-    startDate: { type: Date, required: true },
+    startDate: { type: String, required: true },
     name: { type: String, required: true },
-    endDate: { type: Date, required: true },
+    endDate: { type: String, required: true },
     price: { type: Number, required: true },
     totalPeople: { type: String, required: true },
     description: { type: String, required: true },
@@ -27,7 +27,7 @@ const PackageSchema: Schema = new Schema<TPackage>(
     country: { type: String, required: true },
     location: { type: String, required: true },
     comments: [{ type: Schema.Types.ObjectId, ref: "Comment" }],
-    averageRating: { type: Number, default: 0 },
+    averageRating: { type: Number, default: 1 },
     isDeleted: { type: Boolean, default: false },
   },
   { timestamps: true },

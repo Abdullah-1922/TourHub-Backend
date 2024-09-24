@@ -52,10 +52,27 @@ const deletePackage = async (id: string) => {
   return result;
 };
 
+const getLocationWithCountry=async()=>{
+  const locationData =await Package.find({}).select(['country','location'])
+
+console.log(locationData);
+const uniqueLocations =new Set()
+const result:string[]=[]
+locationData.forEach(item => {
+  const formattedLocation = `${item.location},${item.country}`;
+  if (!uniqueLocations.has(item.location)) {  // Avoid duplicate locations
+    uniqueLocations.add(item.location);
+    result.push(formattedLocation);
+  }
+});
+  return result;
+}
+
 export const PackageServices = {
   createPackage,
   getAllPackage,
   getSinglePackage,
   updatePackage,
   deletePackage,
+  getLocationWithCountry
 };
