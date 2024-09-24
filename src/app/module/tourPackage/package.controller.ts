@@ -49,6 +49,16 @@ const updatePackage = catchAsync(async (req, res) => {
     data: result,
   });
 });
+const getLocationWithCountry = catchAsync(async (req, res) => {
+  const result = await PackageServices.getLocationWithCountry();
+  
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: "Packages location with country retrieved successfully",
+    data: result,
+  });
+});
 
 export const PackageControllers = {
   createPackage,
@@ -56,4 +66,5 @@ export const PackageControllers = {
   getSinglePackage,
   deletePackage,
   updatePackage,
+  getLocationWithCountry
 };
