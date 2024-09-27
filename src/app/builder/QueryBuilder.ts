@@ -45,7 +45,7 @@ export class QueryBuilder<T> {
     let sortBy = "-createdAt";
 
     if (section === "commentSection") {
-      sortBy = "-averageRating";
+      sortBy = "-helpful";
     }
 
     if (this.query?.sortBy) {

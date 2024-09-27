@@ -2,14 +2,18 @@ import { Types } from "mongoose";
 
 export interface TComment {
   userId: Types.ObjectId;
+  clerkId: string;
   tourPackageId: Types.ObjectId;
-  locationRating: number;
-  foodRating: number;
-  roomRating: number;
-  priceRating: number;
-  tourOperatorRating: number;
-  amenitiesRating: number;
+  title: string;
+  // locationRating: number;
+  // foodRating: number;
+  // roomRating: number;
+  // priceRating: number;
+  // tourOperatorRating: number;
+  // amenitiesRating: number;
   comment: string;
-  image?: string[];
-  averageRating: number;
+  helpful: string[];
+  notHelpful: string[];
+  images?: string[];
+ 
 }

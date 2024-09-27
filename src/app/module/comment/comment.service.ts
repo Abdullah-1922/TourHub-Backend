@@ -9,81 +9,70 @@ import { QueryBuilder } from "../../builder/QueryBuilder";
 
 const createComment = async (payload: Partial<TComment>) => {
   const {
-    userId,
     tourPackageId,
-    locationRating = 0,
-    foodRating = 0,
-    roomRating = 0,
-    priceRating = 0,
-    tourOperatorRating = 0,
-    amenitiesRating = 0,
+    // locationRating = 1,
+    // foodRating = 1,
+    // roomRating = 1,
+    // priceRating = 1,
+    // tourOperatorRating = 1,
+    // amenitiesRating = 1,
   } = payload;
 
   const packageData = await Package.findById(tourPackageId);
-  const userData = await User.findById(userId);
+  const userData = await User.findOne({ clerkId: payload.clerkId });
 
   if (!packageData) {
     throw new AppError(httpStatus.NOT_FOUND, "Invalid package Id");
   }
   if (!userData) {
-    throw new AppError(httpStatus.NOT_FOUND, "Invalid user Id");
+    throw new AppError(httpStatus.NOT_FOUND, "Invalid user clerkId");
   }
 
-  const averageRating = parseFloat(
-    (
-      (locationRating +
-        foodRating +
-        roomRating +
-        priceRating +
-        tourOperatorRating +
-        amenitiesRating) /
-      6
-    ).toFixed(1),
-  );
+  payload.userId = userData._id;
 
-  payload.averageRating = averageRating;
+
 
   const session = await mongoose.startSession();
   session.startTransaction();
   try {
     const [newComment] = await Comment.create(
-      [{ ...payload, averageRating: payload.averageRating }],
-      { session },
+      [{ ...payload }],
+      { session }
     );
 
-    const addCommentToPackage = await Package.findByIdAndUpdate(
+    await Package.findByIdAndUpdate(
       tourPackageId,
       { $push: { comments: newComment._id } },
-      { new: true, session },
+      { new: true, session }
     );
 
-    if (addCommentToPackage) {
-      const comments = await Comment.find({ tourPackageId }).session(session);
+    // if (addCommentToPackage) {
+    //   const comments = await Comment.find({ tourPackageId }).session(session);
 
-      if (comments.length === 0) {
-        await Package.findByIdAndUpdate(
-          tourPackageId,
-          { averageRating: 0 },
-          { session },
-        );
-      } else {
-        const totalAverageRating = comments.reduce(
-          (acc, comment) => acc + comment.averageRating,
-          0,
-        );
-        const newAverageRating = (totalAverageRating / comments.length).toFixed(
-          1,
-        );
+    //   if (comments.length === 0) {
+    //     await Package.findByIdAndUpdate(
+    //       tourPackageId,
+    //       { averageRating: 1 },
+    //       { session }
+    //     );
+    //   } else {
+    //     const totalAverageRating = comments.reduce(
+    //       (acc, comment) => acc + comment.averageRating,
+    //       0
+    //     );
+    //     const newAverageRating = (totalAverageRating / comments.length).toFixed(
+    //       1
+    //     );
 
-        await Package.findByIdAndUpdate(
-          tourPackageId,
-          {
-            averageRating: newAverageRating,
-          },
-          { session },
-        );
-      }
-    }
+    //     await Package.findByIdAndUpdate(
+    //       tourPackageId,
+    //       {
+    //         averageRating: newAverageRating,
+    //       },
+    //       { session }
+    //     );
+    //   }
+    // }
 
     await session.commitTransaction();
     session.endSession();
@@ -95,14 +84,14 @@ const createComment = async (payload: Partial<TComment>) => {
     session.endSession();
     throw new AppError(
       httpStatus.INTERNAL_SERVER_ERROR,
-      "Failed to create comment",
+      "Failed to create comment"
     );
   }
 };
 
 const getCommentForPackage = async (
   packageId: string,
-  query: Record<string, unknown>,
+  query: Record<string, unknown>
 ) => {
   const tourPackage = await Package.findById(packageId);
 
@@ -112,7 +101,7 @@ const getCommentForPackage = async (
 
   const packageComment = new QueryBuilder(
     Comment.find({ tourPackageId: packageId }),
-    query,
+    query
   )
     .search(["comment"])
     .filter()
@@ -123,7 +112,61 @@ const getCommentForPackage = async (
   return result;
 };
 
+const addHelpful = async (clerkId: string, commentId: string) => {
+  const comment = await Comment.findById(commentId);
+
+  if (!comment) {
+    throw new AppError(httpStatus.NOT_FOUND, "invalid comment id");
+  }
+  const user = await User.findOne({
+    clerkId,
+  });
+
+  if (!user) {
+    throw new AppError(httpStatus.UNAUTHORIZED, "invalid clerk id");
+  }
+  if(comment.notHelpful.includes(clerkId)){
+    throw new AppError(httpStatus.BAD_REQUEST, "Already select notUseful ");
+  }
+
+  if (!comment.helpful.includes(clerkId)) {
+    comment.helpful.push(clerkId);
+    const result = await comment.save();
+    return result;
+  }else{
+    throw new AppError(httpStatus.BAD_REQUEST,'Already useful')
+  }
+};
+const addNotHelpful = async (clerkId: string, commentId: string) => {
+  const comment = await Comment.findById(commentId);
+
+  if (!comment) {
+    throw new AppError(httpStatus.NOT_FOUND, "invalid comment id");
+  }
+  const user = await User.findOne({
+    clerkId,
+  });
+
+  if (!user) {
+    throw new AppError(httpStatus.UNAUTHORIZED, "invalid clerk id");
+  }
+  if(comment.helpful.includes(clerkId)){
+    throw new AppError(httpStatus.BAD_REQUEST, "Already select useful ");
+  }
+
+
+  if (!comment.helpful.includes(clerkId)) {
+    comment.notHelpful.push(clerkId);
+    const result = await comment.save();
+    return result;
+  }else{
+    throw new AppError(httpStatus.BAD_REQUEST,'Already not-useful')
+  }
+};
+
 export const CommentServices = {
   createComment,
   getCommentForPackage,
+  addHelpful,
+  addNotHelpful,
 };

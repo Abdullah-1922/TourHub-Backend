@@ -27,15 +27,15 @@ const limiter = rateLimit({
 app.use(express.json());
 app.use(cookieParser());
 app.use("/api/v1", limiter);
-// app.use(cors({ origin: ["http://localhost:5173"], credentials: true }));
-app.use(
-  cors({
-    origin: (origin, callback) => {
-      callback(null, origin || "*");
-    },
-    credentials: true,
-  })
-);
+app.use(cors({ origin: ["http://localhost:5000","http://localhost:3000"], credentials: true }));
+// app.use(
+//   cors({
+//     origin: (origin, callback) => {
+//       callback(null, origin || "*");
+//     },
+//     credentials: true,
+//   })
+// );
 
 app.use(ClerkExpressWithAuth());
 

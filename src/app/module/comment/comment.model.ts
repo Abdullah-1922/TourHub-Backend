@@ -3,20 +3,19 @@ import { TComment } from "./comment.interface";
 
 const commentSchema = new mongoose.Schema<TComment>({
   userId: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
+  clerkId:{type:String,required:true},
   tourPackageId: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "TourPackage",
     required: true,
   },
-  locationRating: { type: Number, required: true, min: 0, max: 5 },
-  foodRating: { type: Number, required: true, min: 0, max: 5 },
-  roomRating: { type: Number, required: true, min: 0, max: 5 },
-  priceRating: { type: Number, required: true, min: 0, max: 5 },
-  tourOperatorRating: { type: Number, required: true, min: 0, max: 5 },
-  amenitiesRating: { type: Number, required: true, min: 0, max: 5 },
+  title:{type:String,required:true},
+
+  helpful:{type:[String],required:true,default:[]},
+  notHelpful:{type:[String],required:true,default:[]},
   comment: { type: String, required: true },
-  image: { type: [String] },
-  averageRating: { type: Number, default: 0 },
+  images: { type: [String] },
+
 });
 
 export const Comment = mongoose.model<TComment>("Comment", commentSchema);

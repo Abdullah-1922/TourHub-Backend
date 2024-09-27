@@ -39,6 +39,9 @@ const CreatePackageValidationSchema = z.object({
         include: z.array(z.string({ required_error: "Include is required" })),
         exclude: z.array(z.string({ required_error: "Exclude is required" })),
       }),
+      itinerary: z.array(z.object({day:z.string({ required_error: "day is required" }),title:z.string({ required_error: "title is required" }),description:z.string({ required_error: "description is required" })})) ,
+      tourDuration:z.string({required_error:"Tour duration is required"}),
+      mapLocation:z.string({required_error:"MapLocation is required"}),
       category: z.array(
         z.string({ required_error: "Category is required" }).min(1)
       ),

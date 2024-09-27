@@ -16,6 +16,7 @@ router.get("/", PackageControllers.getAllPackage);
 router.get("/location-country", PackageControllers.getLocationWithCountry);
 router.get("/:id", PackageControllers.getSinglePackage);
 router.delete("/:id", PackageControllers.deletePackage);
+router.patch("/rating", PackageControllers.createRating);  /////
 router.patch("/:id", PackageControllers.updatePackage);
 
 export const PackageRoutes = router;
