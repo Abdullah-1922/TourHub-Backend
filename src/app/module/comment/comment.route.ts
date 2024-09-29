@@ -10,6 +10,9 @@ route.post(
   validateRequest(CommentValidation.createCommentValidation),
   CommentControllers.createComment,
 );
+route.patch("/:id/helpful", CommentControllers.addCommentHelpful);
+route.patch("/:id/not-helpful", CommentControllers.addCommentNotHelpful);
+
 route.get("/:id", CommentControllers.getCommentForPackage);
 
 export const CommentRoutes = route;

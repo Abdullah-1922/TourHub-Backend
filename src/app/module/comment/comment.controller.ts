@@ -13,8 +13,8 @@ const createComment = catchAsync(async (req, res) => {
   });
 });
 const getCommentForPackage = catchAsync(async (req, res) => {
-  console.log(req.params.id, req.query);
-  const result = await CommentServices.getCommentForPackage(
+
+  const {result,meta} = await CommentServices.getCommentForPackage(
     req.params.id,
     req.query,
   );
@@ -24,10 +24,42 @@ const getCommentForPackage = catchAsync(async (req, res) => {
     success: true,
     message: "Comment retrieved successfully",
     data: result,
+    meta:meta
   });
 });
+const addCommentHelpful= catchAsync(async (req, res) => {
+  console.log(req.params.id, req.query);
+  const result = await CommentServices.addHelpful(
+    req.body.clerkId,
+    req.params.id,
+  );
+
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: "Comment helpful added successfully",
+    data: result,
+  });
+});
+const addCommentNotHelpful = catchAsync(async (req, res) => {
+  console.log(req.params.id, req.query);
+  const result = await CommentServices.addNotHelpful(
+    req.body.clerkId,
+    req.params.id,
+  );
+
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: "Comment NotHelpful added successfully",
+    data: result,
+  });
+});
+
 
 export const CommentControllers = {
   createComment,
   getCommentForPackage,
+  addCommentHelpful,
+  addCommentNotHelpful
 };

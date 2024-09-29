@@ -2,7 +2,7 @@ export interface TUser {
   clerkId: string;
   email?: string;
   name: string;
-  role: "admin" | "user" | "guide";
+  role: "admin" | "user";
   isDeleted: boolean;
   image?: string;
 }

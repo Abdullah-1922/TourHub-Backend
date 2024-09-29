@@ -17,9 +17,41 @@ export interface TPackage {
   bannerImage: string[];
   features: TFeature;
   category: string[];
+  itinerary: { day: string; title: string; description: string }[];
+  tourDuration: string;
   country: string;
   location: string;
+  mapLocation: string;
   comments: string[];
-  averageRating: number;
+
+  rating: {
+    locationRating: number;
+    foodRating: number;
+    roomRating: number;
+    priceRating: number;
+    tourOperatorRating: number;
+    amenitiesRating: number;
+    clerkId: string;
+    tourPackageId: string;
+  }[];
+  totalAverageRating: number;
+  averageLocationRating: number;
+  averageFoodRating: number;
+  averageRoomRating: number;
+  averagePriceRating: number;
+  averageTourOperatorRating: number;
+  averageAmenitiesRating: number;
   isDeleted: boolean;
+}
+
+
+export type TRating={
+  locationRating: number
+  foodRating: number
+  roomRating: number
+  priceRating: number
+  tourOperatorRating: number
+  amenitiesRating: number
+  clerkId: string
+  tourPackageId: string
 }

@@ -6,8 +6,33 @@ const FeatureSchema = new Schema<TFeature>(
     include: { type: [String], required: true },
     exclude: { type: [String], required: true },
   },
-  { _id: false, versionKey: false },
+  { _id: false, versionKey: false }
 );
+const itinerarySchema = new Schema(
+  {
+    day: { type: String, required: true },
+    title: { type: String, required: true },
+    description: { type: String, required: true },
+  },
+  { _id: false, versionKey: false }
+);
+
+
+const ratingSchema = new Schema(
+  {
+     locationRating: { type: Number, required: true, min: 1, max: 5,default:1 },
+  foodRating: { type: Number, required: true, min: 1, max: 5,default:1 },
+  roomRating: { type: Number, required: true, min: 1, max: 5,default:1 },
+  priceRating: { type: Number, required: true, min: 1, max: 5,default:1 },
+  tourOperatorRating: { type: Number, required: true, min: 1, max: 5,default:1 },
+  amenitiesRating: { type: Number, required: true, min: 1, max: 5 ,default:1},
+  clerkId: { type: String, required: true },
+  tourPackageId: { type: String, required: true }
+  },
+  { _id: false, versionKey: false }
+);
+
+
 
 const PackageSchema: Schema = new Schema<TPackage>(
   {
@@ -26,11 +51,21 @@ const PackageSchema: Schema = new Schema<TPackage>(
     ],
     country: { type: String, required: true },
     location: { type: String, required: true },
+    itinerary:{type:[itinerarySchema],required:true},
+    tourDuration:{type:String,required:true},
+    mapLocation:{type:String,required:true},
     comments: [{ type: Schema.Types.ObjectId, ref: "Comment" }],
-    averageRating: { type: Number, default: 1 },
+    rating:{ type: [ratingSchema],default:[]},
+    totalAverageRating: { type: Number, default: 1 },
+    averageTourOperatorRating: { type: Number, default: 1 },
+    averageAmenitiesRating: { type: Number, default: 1 },
+    averageFoodRating: { type: Number, default: 1 },
+    averageLocationRating: { type: Number, default: 1 },
+    averagePriceRating: { type: Number, default: 1 },
+    averageRoomRating: { type: Number, default: 1 },
     isDeleted: { type: Boolean, default: false },
   },
-  { timestamps: true },
+  { timestamps: true }
 );
 
 export const Package = model<TPackage>("Package", PackageSchema);

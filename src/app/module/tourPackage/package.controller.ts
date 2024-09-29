@@ -23,7 +23,7 @@ const getAllPackage = catchAsync(async (req, res) => {
   });
 });
 const getSinglePackage = catchAsync(async (req, res) => {
-  const result = await PackageServices.getSinglePackage(req.params.id);
+  const result = await PackageServices.getSinglePackage(req.params.id,req.query);
   sendResponse(res, {
     statusCode: httpStatus.OK,
     success: true,
@@ -40,6 +40,7 @@ const deletePackage = catchAsync(async (req, res) => {
     data: result,
   });
 });
+
 const updatePackage = catchAsync(async (req, res) => {
   const result = await PackageServices.updatePackage(req.params.id, req.body);
   sendResponse(res, {
@@ -59,6 +60,16 @@ const getLocationWithCountry = catchAsync(async (req, res) => {
     data: result,
   });
 });
+const createRating = catchAsync(async (req, res) => {
+  const result = await PackageServices.createRating(req.body);
+  
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: "Rating added successfully",
+    data: result,
+  });
+});
 
 export const PackageControllers = {
   createPackage,
@@ -66,5 +77,6 @@ export const PackageControllers = {
   getSinglePackage,
   deletePackage,
   updatePackage,
-  getLocationWithCountry
+  getLocationWithCountry,
+  createRating
 };
