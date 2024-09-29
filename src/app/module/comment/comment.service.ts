@@ -30,15 +30,10 @@ const createComment = async (payload: Partial<TComment>) => {
 
   payload.userId = userData._id;
 
-
-
   const session = await mongoose.startSession();
   session.startTransaction();
   try {
-    const [newComment] = await Comment.create(
-      [{ ...payload }],
-      { session }
-    );
+    const [newComment] = await Comment.create([{ ...payload }], { session });
 
     await Package.findByIdAndUpdate(
       tourPackageId,
@@ -100,7 +95,7 @@ const getCommentForPackage = async (
   }
 
   const packageComment = new QueryBuilder(
-    Comment.find({ tourPackageId: packageId }),
+    Comment.find({ tourPackageId: packageId }).populate(["userId"]),
     query
   )
     .search(["comment"])
@@ -108,8 +103,11 @@ const getCommentForPackage = async (
     .sort("commentSection")
     .paginate()
     .fields();
+    
   const result = await packageComment.modelQuery;
-  return result;
+  const meta = await packageComment.countTotal();
+  return { result, meta };
+  
 };
 
 const addHelpful = async (clerkId: string, commentId: string) => {
@@ -125,7 +123,7 @@ const addHelpful = async (clerkId: string, commentId: string) => {
   if (!user) {
     throw new AppError(httpStatus.UNAUTHORIZED, "invalid clerk id");
   }
-  if(comment.notHelpful.includes(clerkId)){
+  if (comment.notHelpful.includes(clerkId)) {
     throw new AppError(httpStatus.BAD_REQUEST, "Already select notUseful ");
   }
 
@@ -133,8 +131,8 @@ const addHelpful = async (clerkId: string, commentId: string) => {
     comment.helpful.push(clerkId);
     const result = await comment.save();
     return result;
-  }else{
-    throw new AppError(httpStatus.BAD_REQUEST,'Already useful')
+  } else {
+    throw new AppError(httpStatus.BAD_REQUEST, "Already useful");
   }
 };
 const addNotHelpful = async (clerkId: string, commentId: string) => {
@@ -150,17 +148,16 @@ const addNotHelpful = async (clerkId: string, commentId: string) => {
   if (!user) {
     throw new AppError(httpStatus.UNAUTHORIZED, "invalid clerk id");
   }
-  if(comment.helpful.includes(clerkId)){
+  if (comment.helpful.includes(clerkId)) {
     throw new AppError(httpStatus.BAD_REQUEST, "Already select useful ");
   }
-
 
   if (!comment.helpful.includes(clerkId)) {
     comment.notHelpful.push(clerkId);
     const result = await comment.save();
     return result;
-  }else{
-    throw new AppError(httpStatus.BAD_REQUEST,'Already not-useful')
+  } else {
+    throw new AppError(httpStatus.BAD_REQUEST, "Already not-useful");
   }
 };
 

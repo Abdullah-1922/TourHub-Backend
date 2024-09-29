@@ -8,7 +8,16 @@ const CreateUserValidationSchema = z.object({
     image: z.string({ invalid_type_error: "Invalid type" }).optional(),
   }),
 });
+const updateUserValidationSchema = z.object({
+  body: z.object({
+    name: z.string({ required_error: "Name is required" }).min(2).max(255).optional(),
+    clerkId: z.string({ required_error: "clerkId is required" }),
+    email: z.string({ invalid_type_error: "Invalid type" }).email().optional(),
+    image: z.string({ invalid_type_error: "Invalid type" }).optional(),
+  }),
+});
 
 export const UserValidation = {
   CreateUserValidationSchema,
+  updateUserValidationSchema
 };

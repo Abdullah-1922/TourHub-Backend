@@ -16,6 +16,6 @@ const commentSchema = new mongoose.Schema<TComment>({
   comment: { type: String, required: true },
   images: { type: [String] },
 
-});
+},{timestamps:true});
 
 export const Comment = mongoose.model<TComment>("Comment", commentSchema);

@@ -78,25 +78,21 @@ export class QueryBuilder<T> {
       "max",
       "category",
       "starRating",
-  
     ];
 
     excludeFields.forEach((e) => delete queryObj[e]);
 
     if (queryObj.startDate && queryObj.endDate) {
-      console.log('Valid date range found.');
-    
+      console.log("Valid date range found.");
+
       // Create a range query for a single field (startDate)
       queryObj.startDate = {
         $gte: queryObj.startDate as string,
-        $lte: queryObj.endDate as string
+        $lte: queryObj.endDate as string,
       };
-    
+
       // Since we combined the two into startDate, remove the separate endDate condition
       delete queryObj.endDate;
-    
-   
-    
     } else {
       // If either startDate or endDate is missing, remove both
       delete queryObj.startDate;
@@ -153,7 +149,7 @@ export class QueryBuilder<T> {
   async countTotal() {
     const totalQueries = this.modelQuery.getFilter();
     const total = await this.modelQuery.model.countDocuments(totalQueries);
-    const page = Number(this?.query?.page) || 0;
+    const page = Number(this?.query?.page) || 1;
     const limit = Number(this?.query?.limit) || 9999;
     const totalPage = Math.ceil(total / limit);
 

@@ -15,6 +15,7 @@ router.post(
 );
 
 router.get("/", UserControllers.getAllUser);
+router.patch("/update-profile",validateRequest(UserValidation.updateUserValidationSchema), UserControllers.updateUser);
 router.get("/:id", UserControllers.getSingleUser);
 
 export const UserRoutes = router;
