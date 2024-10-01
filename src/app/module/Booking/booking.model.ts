@@ -1,18 +1,20 @@
-import { Schema, model,  } from 'mongoose';
-import { TBooking } from './booking.interface';
+import { Schema, model } from "mongoose";
+import { TBooking } from "./booking.interface";
 
-
-const bookingSchema = new Schema<TBooking>({
+const bookingSchema = new Schema<TBooking>(
+  {
     clerkId: { type: String, required: true },
-    packageId: { type: String, required: true },
+    packageId: { type: Schema.Types.ObjectId, ref:"Package",required: true },
     amount: { type: Number, required: true },
     paymentStatus: { type: String, required: true },
-    stripeSessionId: { type: String, required: true },
-    bookingDate: { type: Date, default: Date.now }
-}, {
-    timestamps: true
-});
+    transactionId: { type: String, required: true },
+  },
+  {
+    timestamps: true,
+  }
+);
 
-const Booking = model<TBooking>('Booking', bookingSchema);
+const Booking = model<TBooking>("Booking", bookingSchema);
 
 export default Booking;
+

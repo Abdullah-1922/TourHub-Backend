@@ -3,7 +3,7 @@ import { z } from "zod";
 const CreatePackageValidationSchema = z.object({
   body: z
     .object({
-      user: z.string({ required_error: "User Id is required" }).min(2).max(255),
+      clerkId: z.string({ required_error: "User Id is required" }).min(2).max(255),
       name: z
         .string({ required_error: "Package Name is required" })
         .min(2)

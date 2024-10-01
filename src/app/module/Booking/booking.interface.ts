@@ -1,8 +1,9 @@
+import { Types } from "mongoose";
+
 export type TBooking = {
   clerkId: string;
-  packageId: string;
+  packageId: Types.ObjectId;
   amount: number;
   paymentStatus: string;
-  stripeSessionId: string;
-  bookingDate: Date;
+  transactionId:string
 };

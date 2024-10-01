@@ -1,14 +1,20 @@
 import { QueryBuilder } from "../../builder/QueryBuilder";
 import AppError from "../../errors/AppError";
+import { User } from "../User/user.model";
 import { TNews } from "./news.interface";
 import { News } from "./news.model";
 
 const createNews = async (payload: Partial<TNews>) => {
+  const user = await User.findOne({ clerkId: payload.clerkId });
+  if (!user) {
+    throw new AppError(404, "User not found");
+  }
+  payload.user = user._id;
   const res = await News.create(payload);
   return res;
 };
 const getAllNews = async (query: Record<string, unknown>) => {
-  const newsQuery = new QueryBuilder(News.find(), query)
+  const newsQuery = new QueryBuilder(News.find().populate("user"), query)
     .search(["newsCategory", "title", "description"])
     .filter()
     .sort()
@@ -25,7 +31,7 @@ const deleteSingleNews = async (id: string) => {
   return result;
 };
 const getSingleNews = async (id: string) => {
-  const result = await News.findById(id);
+  const result = await News.findById(id).populate("user");
 
   return result;
 };

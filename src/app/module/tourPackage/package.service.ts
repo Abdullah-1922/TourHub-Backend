@@ -7,11 +7,12 @@ import { TPackage, TRating } from "./package.interface";
 import { Package } from "./package.model";
 
 const createPackage = async (payload: Partial<TPackage>) => {
-  const user = await User.findById(payload.user);
-  if (!user) {
-    throw new AppError(httpStatus.UNAUTHORIZED, "Invalid user id");
-  }
+  const userByClerk = await User.findOne({ clerkId: payload.clerkId });
 
+  if (!userByClerk) {
+    throw new AppError(httpStatus.UNAUTHORIZED, "Invalid clerkId");
+  }
+  payload.user = userByClerk._id;
   const res = await Package.create(payload);
   return res;
 };
@@ -21,7 +22,7 @@ const getAllPackage = async (query: Record<string, unknown>) => {
   }
 
   const tourPackageQuery = new QueryBuilder(
-    Package.find({ isDeleted: false }),
+    Package.find({ isDeleted: false }).populate("category"),
     query
   )
     .search(["country", "location"])
@@ -34,9 +35,8 @@ const getAllPackage = async (query: Record<string, unknown>) => {
   return { result, meta };
 };
 const getSinglePackage = async (id: string, query: Record<string, unknown>) => {
-
   const tourPackageQuery = new QueryBuilder(
-    Package.find({ isDeleted: false, _id: id }),
+    Package.find({ isDeleted: false, _id: id }).populate("category"),
     query
   )
 

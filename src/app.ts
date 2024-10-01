@@ -6,10 +6,8 @@ import notFound from "./app/middlewares/notFound";
 import globalErrorHandler from "./app/middlewares/globalErrorhandler";
 import rateLimit from "express-rate-limit";
 import { ClerkExpressWithAuth } from "@clerk/clerk-sdk-node";
-import paymentWebhookHandler from "./app/payment/payment-web-hook";
+// import paymentWebhookHandler from "./app/payment/payment-web-hook";
 import { paymentController } from "./app/payment/payment";
-import AppError from "./app/errors/AppError";
-
 
 const app: Application = express();
 
@@ -31,7 +29,7 @@ app.use(cookieParser());
 app.use("/api/v1", limiter);
 app.use(
   cors({
-    origin: ["http://localhost:5000", "http://localhost:3000"],
+    origin: ["http://localhost:5000", "http://localhost:3000","https://tour-hub-frontend.vercel.app"],
     credentials: true,
   })
 );
@@ -44,17 +42,14 @@ app.use("/api/v1", router);
 
 // Payment-related Routes
 app.post("/api/v1/create-checkout-session", paymentController);
-app.use("/api/v1", paymentWebhookHandler);
 
 // Health check route
 app.get("/", (req: Request, res: Response) => {
   res.send("Hello from TourHub code");
 });
 
-
 // Error handlers
 app.use(globalErrorHandler);
 app.use(notFound);
-
 
 export default app;
