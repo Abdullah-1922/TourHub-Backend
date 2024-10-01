@@ -15,7 +15,11 @@ router.post(
 );
 
 router.get("/", UserControllers.getAllUser);
+router.delete("/:id", UserControllers.deleteUser);
 router.patch("/update-profile",validateRequest(UserValidation.updateUserValidationSchema), UserControllers.updateUser);
+router.patch("/update-role/:id", UserControllers.updateUserRole);
+router.get("/stripe-user/:id", UserControllers.getStripeUser);
+router.post("/stripe-user", UserControllers.createStripeUser);
 router.get("/:id", UserControllers.getSingleUser);
 
 export const UserRoutes = router;

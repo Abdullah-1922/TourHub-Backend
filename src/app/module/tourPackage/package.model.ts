@@ -37,6 +37,7 @@ const ratingSchema = new Schema(
 const PackageSchema: Schema = new Schema<TPackage>(
   {
     user: { type: Schema.Types.ObjectId, ref: "user", required: true },
+    clerkId: { type: String, required: true },
     startDate: { type: String, required: true },
     name: { type: String, required: true },
     endDate: { type: String, required: true },

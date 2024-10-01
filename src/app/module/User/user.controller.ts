@@ -13,6 +13,19 @@ const createUser = catchAsync(async (req, res) => {
     data: result,
   });
 });
+
+const updateUserRole = catchAsync(async (req, res) => {
+
+  const currentUser = req.headers["clerkid"] as string;
+  const result = await UserServices.updateUserRole(req.params.id,currentUser);
+
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: "User role updated successfully",
+    data: result,
+  });
+});
 const getAllUser = catchAsync(async (req, res) => {
   const result = await UserServices.getAllUser(req.query);
 
@@ -35,10 +48,6 @@ const getSingleUser = catchAsync(async (req, res) => {
 });
 const updateUser = catchAsync(async (req, res) => {
   const result = await UserServices.updateUser(req.body);
-  
-
-
-
 
   sendResponse(res, {
     statusCode: httpStatus.OK,
@@ -47,10 +56,44 @@ const updateUser = catchAsync(async (req, res) => {
     data: result,
   });
 });
+const createStripeUser = catchAsync(async (req, res) => {
+  const result = await UserServices.createStripeUser(req.body);
+
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: "Stripe user created successfully",
+    data: result,
+  });
+});
+const getStripeUser = catchAsync(async (req, res) => {
+  const result = await UserServices.getStripeUser(req.params.id);
+
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: "Stripe user retrieved successfully",
+    data: result,
+  });
+});
+const deleteUser = catchAsync(async (req, res) => {
+  const result = await UserServices.deleteUser(req.params.id);
+
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: "User deleted successfully",
+    data: result,
+  });
+});
 
 export const UserControllers = {
   createUser,
   getAllUser,
   getSingleUser,
-  updateUser
+  updateUser,
+  createStripeUser,
+  getStripeUser,
+  updateUserRole,
+  deleteUser
 };

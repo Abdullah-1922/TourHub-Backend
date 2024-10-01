@@ -8,6 +8,7 @@ export interface TFeature {
 export interface TPackage {
   user: Types.ObjectId;
   name: string;
+  clerkId: string;
   startDate: string;
   endDate: string;
   price: number;
@@ -19,9 +20,9 @@ export interface TPackage {
   category: string[];
   itinerary: { day: string; title: string; description: string }[];
   tourDuration: string;
+  mapLocation: string;
   country: string;
   location: string;
-  mapLocation: string;
   comments: string[];
 
   rating: {
