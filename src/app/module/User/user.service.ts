@@ -22,6 +22,11 @@ const createUser = async (userPayload: TUser) => {
   return result;
 };
 const updateUserRole = async (clerkId: string, currentUserId: string) => {
+
+if(clerkId == process.env.SUPER_ADMIN){
+  throw new AppError(httpStatus.BAD_REQUEST,"Can not change super admin status")
+}
+
   const currentUser = await User.findOne({ clerkId: currentUserId }).select(
     "role"
   );
@@ -153,6 +158,81 @@ const getStripeUser = async (id: string) => {
   return user;
 };
 
+const monthlyUserCount = async () => {
+  // Get the current date and determine the current year and month
+  const currentDate = new Date();
+  const currentYear = currentDate.getFullYear();
+  const currentMonthIndex = currentDate.getUTCMonth(); // Get current month index (0-11)
+
+  // Initialize the count for each month to zero
+  const monthlyUserCounts = Array(12).fill(0);
+
+  // Get all users created in the current year
+  const users = await User.find({
+    createdAt: {
+      $gte: new Date(`${currentYear}-01-01T00:00:00.000Z`),
+      $lt: new Date(`${currentYear + 1}-01-01T00:00:00.000Z`),
+    },
+  });
+
+  // Count users for each month
+  users.forEach((user) => {
+    const month = new Date(user.createdAt).getUTCMonth(); // Get month index (0-11)
+    monthlyUserCounts[month]++;
+  });
+
+  // Prepare the chart data for the total users for all 12 months
+  const chartData = [
+    { month: "January", users: monthlyUserCounts[0] },
+    { month: "February", users: monthlyUserCounts[1] },
+    { month: "March", users: monthlyUserCounts[2] },
+    { month: "April", users: monthlyUserCounts[3] },
+    { month: "May", users: monthlyUserCounts[4] },
+    { month: "June", users: monthlyUserCounts[5] },
+    { month: "July", users: monthlyUserCounts[6] },
+    { month: "August", users: monthlyUserCounts[7] },
+    { month: "September", users: monthlyUserCounts[8] },
+    { month: "October", users: monthlyUserCounts[9] },
+    { month: "November", users: monthlyUserCounts[10] },
+    { month: "December", users: monthlyUserCounts[11] },
+  ];
+
+  // Get user counts for the last month and the month before last
+  const lastMonthIndex =
+    currentMonthIndex - 1 >= 0 ? currentMonthIndex - 1 : 11; // Last month (handle January wrap around)
+  const previousMonthIndex = lastMonthIndex - 1 >= 0 ? lastMonthIndex - 1 : 11; // Month before last
+
+  const lastMonthCount = monthlyUserCounts[lastMonthIndex];
+  const previousMonthCount = monthlyUserCounts[previousMonthIndex];
+
+  // Calculate percentage change between last month and the month before last
+  let status = "no change";
+  let percentage = 0;
+
+  if (previousMonthCount > 0) {
+    percentage =
+      ((lastMonthCount - previousMonthCount) / previousMonthCount) * 100;
+    status =
+      percentage > 0 ? "increase" : percentage < 0 ? "decrease" : "no change";
+  } else if (lastMonthCount > 0) {
+    // If the month before last has zero users, treat any new users in the last month as an increase
+    percentage = 100;
+    status = "increase";
+  }
+
+  // Prepare the final result
+  const result = {
+    chartData,
+    lastMonthStats: {
+      totalUsers: lastMonthCount, // Total users for the last month
+      status,
+      percentage: Math.abs(percentage), // Use absolute value for percentage
+    },
+  };
+
+  return result;
+};
+
 export const UserServices = {
   createUser,
   getAllUser,
@@ -161,5 +241,6 @@ export const UserServices = {
   createStripeUser,
   getStripeUser,
   updateUserRole,
-  deleteUser
+  deleteUser,
+  monthlyUserCount,
 };

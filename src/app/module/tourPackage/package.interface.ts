@@ -24,7 +24,11 @@ export interface TPackage {
   country: string;
   location: string;
   comments: string[];
-
+  published:boolean;
+  guideName:string
+  guideContact:string
+  pickUpTime:string
+  pickUpLocation:string
   rating: {
     locationRating: number;
     foodRating: number;

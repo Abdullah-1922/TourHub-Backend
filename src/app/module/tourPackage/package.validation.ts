@@ -42,6 +42,11 @@ const CreatePackageValidationSchema = z.object({
       itinerary: z.array(z.object({day:z.string({ required_error: "day is required" }),title:z.string({ required_error: "title is required" }),description:z.string({ required_error: "description is required" })})) ,
       tourDuration:z.string({required_error:"Tour duration is required"}),
       mapLocation:z.string({required_error:"MapLocation is required"}),
+      guideName:z.string({required_error:"guideName is required"}),
+      guideContact:z.string({required_error:"guideContact is required"}),
+      pickUpLocation:z.string({required_error:"pickUpLocation is required"}),
+      pickUpTime:z.string({required_error:"PickUpTime is required"}),
+      published:z.boolean().optional(),
       category: z.array(
         z.string({ required_error: "Category is required" }).min(1)
       ),

@@ -5,5 +5,10 @@ export type TBooking = {
   packageId: Types.ObjectId;
   amount: number;
   paymentStatus: string;
-  transactionId:string
+  transactionId:string;
+  email:string;
+  name:string;
+  invoiceId:string;
+  packageName:string;
+
 };

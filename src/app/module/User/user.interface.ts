@@ -5,6 +5,7 @@ export interface TUser {
   role: "admin" | "user"| "superadmin";
   isDeleted: boolean;
   image?: string;
+  createdAt: Date;
 }
 export interface TStripeUser {
   clerkId: string;

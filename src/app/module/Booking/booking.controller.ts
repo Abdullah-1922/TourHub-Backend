@@ -54,10 +54,32 @@ const getBasicStats = catchAsync(async (req, res) => {
     data: result,
   });
 });
+const monthlySales = catchAsync(async (req, res) => {
+  const result = await BookingService.monthlySales();
+
+  sendResponse(res, {
+    success: true,
+    statusCode: httpStatus.OK,
+    message: "Monthly stats retrieved successfully",
+    data: result,
+  });
+});
+const bookingInfoByInvoice = catchAsync(async (req, res) => {
+  const result = await BookingService.bookingInfoByInvoice(req.params.invoiceId);
+
+  sendResponse(res, {
+    success: true,
+    statusCode: httpStatus.OK,
+    message: "bookingInfoByInvoice retrieved successfully",
+    data: result,
+  });
+});
 export const BookingControllers = {
   getAllBooking,
   alreadyBooked,
   createBooking,
   bookingByUser,
-  getBasicStats
+  getBasicStats,
+  monthlySales,
+  bookingInfoByInvoice
 };

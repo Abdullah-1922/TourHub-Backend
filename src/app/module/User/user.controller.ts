@@ -86,6 +86,16 @@ const deleteUser = catchAsync(async (req, res) => {
     data: result,
   });
 });
+const monthlyUserCount = catchAsync(async (req, res) => {
+  const result = await UserServices.monthlyUserCount();
+
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: "Monthly user count stats retrieved successfully",
+    data: result,
+  });
+});
 
 export const UserControllers = {
   createUser,
@@ -95,5 +105,6 @@ export const UserControllers = {
   createStripeUser,
   getStripeUser,
   updateUserRole,
-  deleteUser
+  deleteUser,
+  monthlyUserCount
 };
