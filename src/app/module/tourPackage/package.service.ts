@@ -5,6 +5,7 @@ import { Comment } from "../comment/comment.model";
 import { User } from "../User/user.model";
 import { TPackage, TRating } from "./package.interface";
 import { Package } from "./package.model";
+import Booking from "../Booking/booking.model";
 
 const createPackage = async (payload: Partial<TPackage>) => {
   const userByClerk = await User.findOne({ clerkId: payload.clerkId });
@@ -68,6 +69,24 @@ const deletePackage = async (id: string) => {
 
   return result;
 };
+const deleteBulkPackages = async (ids: string[]) => {
+  const results = [];
+
+  for (const id of ids) {
+    const tourPackage = await Package.findById(id);
+    if (!tourPackage) {
+      throw new AppError(404, `Tour package with id ${id} not found`);
+    }
+
+    const result = await Package.findByIdAndDelete(id);
+    if (result) {
+      await Comment.deleteMany({ tourPackageId: id });
+      results.push(result);
+    }
+  }
+
+  return results;
+};
 const createRating = async (payload: TRating) => {
   const {
     amenitiesRating,
@@ -101,12 +120,8 @@ const createRating = async (payload: TRating) => {
     );
   }
 
-  // Add new rating to the package's rating array
-  packageData.rating.push(payload);
-
-  // If this is the first rating, set the averages based on this rating directly
-  if (ratingData.length < 1) {
-    // Set individual category average ratings to the first rating values
+  if (ratingData.length === 0) {
+    // If this is the first rating, set the averages based on this rating directly
     packageData.averageLocationRating = locationRating;
     packageData.averageFoodRating = foodRating;
     packageData.averageRoomRating = roomRating;
@@ -130,10 +145,12 @@ const createRating = async (payload: TRating) => {
     // Set the total average rating
     packageData.totalAverageRating = totalAverageRating;
 
-    // Save the first rating and return
-    const result = await packageData.save();
-    return result;
+    // Add new rating to the package's rating array
+    packageData.rating.push(payload);
   } else {
+    // Add new rating to the package's rating array
+    packageData.rating.push(payload);
+
     // Proceed with average recalculation if there are existing ratings
     const totalRatings = packageData.rating.length;
 
@@ -192,11 +209,12 @@ const createRating = async (payload: TRating) => {
     );
 
     packageData.totalAverageRating = totalAverageRating;
-
-    // Save the updated package
-    const result = await packageData.save();
-    return result;
   }
+
+  // Save the updated package
+  console.log(packageData);
+  const result = await packageData.save();
+  return result;
 };
 
 const getLocationWithCountry = async () => {
@@ -215,6 +233,59 @@ const getLocationWithCountry = async () => {
   });
   return result;
 };
+const getTopBookedLocations = async () => {
+  try {
+    // Aggregate from Bookings and join with Packages
+    const topLocations = await Booking.aggregate([
+      {
+        // Lookup to join Bookings with Package data
+        $lookup: {
+          from: "packages", // The name of the Package collection
+          localField: "packageId",
+          foreignField: "_id",
+          as: "packageInfo",
+        },
+      },
+      {
+        // Unwind the joined packageInfo array
+        $unwind: "$packageInfo",
+      },
+      {
+        // Group by location, get the count and collect an image
+        $group: {
+          _id: "$packageInfo.location",
+          totalPackages: { $sum: 1 },
+          image: { $first: "$packageInfo.cardImage" }, // Use the first image from any package in the location
+        },
+      },
+      {
+        // Sort by totalPackages in descending order
+        $sort: { totalPackages: -1 },
+      },
+      {
+        // Limit to top 10 locations
+        $limit: 10,
+      },
+      {
+        // Reshape the output to the desired structure
+        $project: {
+          _id: 0,
+          location: "$_id",
+          image: 1,
+          totalPackages: 1,
+        },
+      },
+    ]);
+
+    return topLocations;
+  } catch (error) {
+    console.error("Error fetching top booked locations:", error);
+    throw error;
+  }
+};
+
+
+
 
 export const PackageServices = {
   createPackage,
@@ -224,4 +295,6 @@ export const PackageServices = {
   deletePackage,
   getLocationWithCountry,
   createRating,
+  getTopBookedLocations,
+  deleteBulkPackages
 };

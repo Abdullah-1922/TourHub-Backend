@@ -15,6 +15,7 @@ router.post(
 );
 
 router.get("/", UserControllers.getAllUser);
+router.get("/stats/monthly-users", UserControllers.monthlyUserCount);
 router.delete("/:id", UserControllers.deleteUser);
 router.patch("/update-profile",validateRequest(UserValidation.updateUserValidationSchema), UserControllers.updateUser);
 router.patch("/update-role/:id", UserControllers.updateUserRole);

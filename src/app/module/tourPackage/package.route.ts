@@ -14,6 +14,8 @@ router.post(
 );
 router.get("/", PackageControllers.getAllPackage);
 router.get("/location-country", PackageControllers.getLocationWithCountry);
+router.delete("/bulk", PackageControllers.deleteBulkPackages);
+router.get("/stats/top-locations", PackageControllers.getTopLocations);
 router.get("/:id", PackageControllers.getSinglePackage);
 router.delete("/:id", PackageControllers.deletePackage);
 router.patch("/rating", PackageControllers.createRating);  /////

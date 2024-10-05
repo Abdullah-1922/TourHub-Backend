@@ -40,6 +40,15 @@ const deletePackage = catchAsync(async (req, res) => {
     data: result,
   });
 });
+const deleteBulkPackages = catchAsync(async (req, res) => {
+  const result = await PackageServices.deleteBulkPackages(req.body.ids);
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: "Packages deleted successfully",
+    data: result,
+  });
+});
 
 const updatePackage = catchAsync(async (req, res) => {
   const result = await PackageServices.updatePackage(req.params.id, req.body);
@@ -70,6 +79,16 @@ const createRating = catchAsync(async (req, res) => {
     data: result,
   });
 });
+const getTopLocations = catchAsync(async (req, res) => {
+  const result = await PackageServices.getTopBookedLocations();
+  
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: "Top locations retrieved successfully",
+    data: result,
+  });
+});
 
 export const PackageControllers = {
   createPackage,
@@ -78,5 +97,7 @@ export const PackageControllers = {
   deletePackage,
   updatePackage,
   getLocationWithCountry,
-  createRating
+  createRating,
+  getTopLocations,
+  deleteBulkPackages
 };

@@ -8,6 +8,10 @@ const bookingSchema = new Schema<TBooking>(
     amount: { type: Number, required: true },
     paymentStatus: { type: String, required: true },
     transactionId: { type: String, required: true },
+    invoiceId: { type: String, required: true },
+    name: { type: String, required: true },
+    email: { type: String, required: true },
+    packageName:{ type: String, required: true }
   },
   {
     timestamps: true,
