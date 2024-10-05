@@ -1,7 +1,5 @@
 import { Response } from "express";
 
-9
-
 type TMeta = {
   limit: number;
   page: number;

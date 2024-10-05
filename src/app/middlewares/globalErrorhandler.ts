@@ -8,9 +8,8 @@ import handleZodError from "../errors/handleZodError";
 import { TErrorSources } from "../interface/error";
 import config from "../../config";
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const globalErrorHandler: ErrorRequestHandler = (err, req, res, next) => {
-  console.log(err.statusCode);
-
   let statusCode = 500;
   let message = "Something went wrong!";
   let errorSources: TErrorSources = [

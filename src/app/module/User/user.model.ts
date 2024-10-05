@@ -1,7 +1,5 @@
-/* eslint-disable @typescript-eslint/no-this-alias */
-
 import { Schema, model } from "mongoose";
-import { TUser } from "./user.interface";
+import { TStripeUser, TUser } from "./user.interface";
 
 const userSchema = new Schema<TUser>(
   {
@@ -21,7 +19,8 @@ const userSchema = new Schema<TUser>(
     },
     role: {
       type: String,
-      enum: ["admin", "user", "guide"],
+      enum: ["admin", "user","superadmin"],
+      default: "user",
     },
     image: {
       type: String,
@@ -32,10 +31,33 @@ const userSchema = new Schema<TUser>(
       type: Boolean,
       default: false,
     },
+    createdAt: { type: Date, default: Date.now },
   },
   {
     timestamps: true,
-  },
+  }
 );
 
 export const User = model<TUser>("User", userSchema);
+
+
+const stripeUserSchema = new Schema<TStripeUser>(
+  {
+    clerkId: {
+      type: String,
+      required: true,
+   
+    },
+    customerId: {
+      type: String,
+      required: true,
+     
+    },
+    
+  },
+  {
+    timestamps: true,
+  }
+);
+
+export const StripeUser = model<TStripeUser>("StripeUser", stripeUserSchema);

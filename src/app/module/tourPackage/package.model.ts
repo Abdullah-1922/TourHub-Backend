@@ -8,16 +8,47 @@ const FeatureSchema = new Schema<TFeature>(
   },
   { _id: false, versionKey: false }
 );
+const itinerarySchema = new Schema(
+  {
+    day: { type: String, required: true },
+    title: { type: String, required: true },
+    description: { type: String, required: true },
+  },
+  { _id: false, versionKey: false }
+);
+
+
+const ratingSchema = new Schema(
+  {
+     locationRating: { type: Number, required: true, min: 1, max: 5,default:1 },
+  foodRating: { type: Number, required: true, min: 1, max: 5,default:1 },
+  roomRating: { type: Number, required: true, min: 1, max: 5,default:1 },
+  priceRating: { type: Number, required: true, min: 1, max: 5,default:1 },
+  tourOperatorRating: { type: Number, required: true, min: 1, max: 5,default:1 },
+  amenitiesRating: { type: Number, required: true, min: 1, max: 5 ,default:1},
+  clerkId: { type: String, required: true },
+  tourPackageId: { type: String, required: true }
+  },
+  { _id: false, versionKey: false }
+);
+
+
 
 const PackageSchema: Schema = new Schema<TPackage>(
   {
     user: { type: Schema.Types.ObjectId, ref: "user", required: true },
-    startDate: { type: Date, required: true },
+    clerkId: { type: String, required: true },
+    startDate: { type: String, required: true },
     name: { type: String, required: true },
-    endDate: { type: Date, required: true },
+    endDate: { type: String, required: true },
     price: { type: Number, required: true },
     totalPeople: { type: String, required: true },
     description: { type: String, required: true },
+    guideContact: { type: String, required: true },
+    guideName: { type: String, required: true },
+    pickUpLocation: { type: String, required: true },
+    pickUpTime: { type: String, required: true },
+    published: { type: Boolean, required: true,default:true },
     cardImage: { type: String, required: true },
     bannerImage: { type: [String], required: true },
     features: { type: FeatureSchema, required: true },
@@ -26,6 +57,18 @@ const PackageSchema: Schema = new Schema<TPackage>(
     ],
     country: { type: String, required: true },
     location: { type: String, required: true },
+    itinerary:{type:[itinerarySchema],required:true},
+    tourDuration:{type:String,required:true},
+    mapLocation:{type:String,required:true},
+    comments: [{ type: Schema.Types.ObjectId, ref: "Comment" }],
+    rating:{ type: [ratingSchema],default:[]},
+    totalAverageRating: { type: Number, default: 1 },
+    averageTourOperatorRating: { type: Number, default: 1 },
+    averageAmenitiesRating: { type: Number, default: 1 },
+    averageFoodRating: { type: Number, default: 1 },
+    averageLocationRating: { type: Number, default: 1 },
+    averagePriceRating: { type: Number, default: 1 },
+    averageRoomRating: { type: Number, default: 1 },
     isDeleted: { type: Boolean, default: false },
   },
   { timestamps: true }
